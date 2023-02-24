@@ -39,6 +39,32 @@ class BooksController {
             res.status(500).send({ code: 500, error: "Something goes wrong" })
         }
     }
+
+
+    async updateAvaibleBook(res, req) {
+        try {
+
+            const book = req.body;
+            return await repositoryBooks.updateAvaibleBook(book);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ code: 500, error: "Something goes wrong" })
+        }
+    }
+
+    async getMyBooks() {
+
+        try {
+
+            return await repositoryBooks.getMyBooks();
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ code: 500, error: "Something goes wrong" })
+        }
+
+    }
+
 }
 
 module.exports = BooksController;
