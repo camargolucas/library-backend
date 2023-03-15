@@ -10,7 +10,7 @@ class UserRepository {
     }
 
     async insertUser(user){
-        return await UserModel.insertMany(user);
+        return await UserModel.create(user);
     }
 
 }
