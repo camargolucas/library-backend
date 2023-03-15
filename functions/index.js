@@ -12,6 +12,9 @@ const loginController = new LoginController();
 const UserController = require('./src/controller/user')
 const userController = new UserController();
 
+const UserRepository = require('./src/repositories/user')
+const userRepository = new UserRepository()
+
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression')
@@ -47,18 +50,24 @@ app.post('/login', async (req, res) => {
     const user = await loginController.login(req, res);
     if (!!user)
         res.status(200)
-            .send(user);
+            .send({ success: true, user: user });
     else
-        res.status(404)
-            .send({ error: 'User not found.' })
+        res.status(200)
+            .send({ success: false, error: 'User not found.' })
 })
 
 app.post('/user', async (req, res) => {
-    const user = await userController.createUser(req, res);
 
-    res.status(200)
-        .send(user);
-
+    const body = req?.body;
+    const alreadyExist = await userRepository.findUser(body?.cpf);
+    if (alreadyExist) {                
+        res.status(200)
+            .send({ success: false, error: 'User already exist' })
+    } else {
+        const user = await userController.createUser(req, res);
+        res.status(200)
+            .send({ success: true, user: user });
+    }
 
 })
 

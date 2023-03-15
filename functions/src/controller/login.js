@@ -6,9 +6,12 @@ const userRepository = new UserRepository();
 class LoginController {
 
     async login(req, res) {
-        const body = req.body;
-        return await userRepository.findUser(body?.cpf);      
-
+        try {
+            const body = req.body;
+            return await userRepository.findUser(body?.cpf);
+        } catch (error) {
+            res.status(500).send({success:false, error: 'Something goes wrong!'})
+        }
 
     }
 

@@ -3,7 +3,9 @@ const { Schema } = require("mongoose");
 let userSchema = new Schema({
     name: String,
     cpf: String,
-    books: Array
+    books: {
+        type: Array, default: []
+    },
 },
     {
         timestamps: true,
