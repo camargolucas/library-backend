@@ -53,7 +53,7 @@ app.post('/login', async (req, res) => {
             .send({ success: true, user: user });
     else
         res.status(200)
-            .send({ success: false, error: 'User not found.' })
+            .send({ success: false, error: 'Usuario não encontrado!' })
 })
 
 app.post('/user', async (req, res) => {
@@ -62,7 +62,7 @@ app.post('/user', async (req, res) => {
     const alreadyExist = await userRepository.findUser(body?.cpf);
     if (alreadyExist) {                
         res.status(200)
-            .send({ success: false, error: 'User already exist' })
+            .send({ success: false, error: 'Usuario ja existe!' })
     } else {
         const user = await userController.createUser(req, res);
         res.status(200)
