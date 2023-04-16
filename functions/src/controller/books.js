@@ -1,6 +1,7 @@
 const Repository = require('../repositories/books')
 const repositoryBooks = new Repository();
-
+const BooksModel = require('../models/books');
+const mongoose = require('mongoose');
 class BooksController {
     constructor() {
 
@@ -40,23 +41,47 @@ class BooksController {
         }
     }
 
-
-    async updateAvaibleBook(res, req) {
+    async devolutionBook(res, req) {
         try {
 
-            const book = req.body;
-            return await repositoryBooks.updateAvaibleBook(book);
+            const body = req.body;
+            const user = body.user;
+            const book = body.book;                 
+            
+            return await repositoryBooks.devolutionBook(book, user);
         } catch (error) {
             console.error(error);
             res.status(500).send({ code: 500, error: "Something goes wrong" })
         }
     }
 
-    async getMyBooks() {
 
+    async updateAvaibleBook(res, req) {
         try {
 
-            return await repositoryBooks.getMyBooks();
+            const body = req.body;
+            const user = body.user;
+            const book = body.book;            
+
+            const avaibleBook = await BooksModel.findOne({ "_id": mongoose.Types.ObjectId(book._id) })
+
+            if(!avaibleBook?.avaible){
+                res.status(200).send({ code: 200, error: `Livro já emprestado! ${user.name}` })
+                return;
+            }
+
+            return await repositoryBooks.updateAvaibleBook(book, user);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ code: 500, error: "Something goes wrong" })
+        }
+    }
+
+    async getMyBooks(req, res) {               
+        try {
+
+            const user = req.query._id           
+            return await repositoryBooks.getMyBooks(user);
 
         } catch (error) {
             console.error(error);

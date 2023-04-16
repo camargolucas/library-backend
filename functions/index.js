@@ -34,33 +34,45 @@ app.get('/books', async (req, res) => {
 })
 
 app.put('/books/updateAvaibleBook', async (req, res) => {
-    const book = await booksController.updateAvaibleBook(res, req);
+    const user = await booksController.updateAvaibleBook(res, req);
+    user.cpf = null;
     res.status(200)
-        .send(book);
+        .send(user);
+})
+
+app.put('/books/devolutionBook', async (req, res) => {
+    const user = await booksController.devolutionBook(res, req);
+    user.cpf = null;
+    res.status(200)
+        .send(user);
 })
 
 
 app.get('/books/myBooks', async (req, res) => {
-    const book = await booksController.getMyBooks();
+    const book = await booksController.getMyBooks(req, res);
     res.status(200)
         .send(book);
 })
 
 app.post('/login', async (req, res) => {
     const user = await loginController.login(req, res);
-    if (!!user)
+    if (!!user) {
+        user.cpf = null;
+        console.log("user CPF", user.cpf);
         res.status(200)
             .send({ success: true, user: user });
-    else
+    } else {
         res.status(200)
             .send({ success: false, error: 'Usuario não encontrado!' })
+    }
+
 })
 
 app.post('/user', async (req, res) => {
 
     const body = req?.body;
     const alreadyExist = await userRepository.findUser(body?.cpf);
-    if (alreadyExist) {                
+    if (alreadyExist) {
         res.status(200)
             .send({ success: false, error: 'Usuario ja existe!' })
     } else {
